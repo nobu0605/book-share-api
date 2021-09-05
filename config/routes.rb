@@ -9,6 +9,7 @@ Rails
                                             registrations:
                                                 "api/auth/registrations"
                                         }
-            get "get_users/", to: "users#get_users"
+            get "/get_users", to: "users#get_users"
+            post "/get_user", to: "users#get_user"
         end
     end
