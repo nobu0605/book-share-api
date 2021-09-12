@@ -6,11 +6,11 @@
 # Read more: https://github.com/cyu/rack-cors
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
-    allow do
-        origins "http://localhost:3001", "https://book-share-phi.vercel.app"
-        resource "*",
-                 headers: :any,
-                 expose: %w[access-token uid client],
-                 methods: %i[get post put patch delete options head]
-    end
+  allow do
+    origins "http://localhost:3001", "https://book-share-phi.vercel.app"
+    resource "*",
+             headers: :any,
+             expose: %w[access-token uid client],
+             methods: %i[get post put patch delete options head]
+  end
 end
