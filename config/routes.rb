@@ -10,5 +10,6 @@ Rails
                                   }
       get "/get_users", to: "users#get_users"
       post "/get_user", to: "users#get_user"
+      resources :posts, only: %i[index show create update destroy]
     end
   end

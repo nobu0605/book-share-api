@@ -6,6 +6,8 @@ class Api::UsersController < ApplicationController
     return render status: "400", json: "User not found" if !@user
 
     return render status: "200", json: @user
+  rescue Exception => e
+    render status: "500", json: { message: "Internal Server Error" }
   end
 
   def get_user
@@ -13,5 +15,7 @@ class Api::UsersController < ApplicationController
     return render status: "400", json: "User not found" if !@user
 
     return render status: "200", json: @user
+  rescue Exception => e
+    render status: "500", json: { message: "Internal Server Error" }
   end
 end
