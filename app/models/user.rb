@@ -8,5 +8,6 @@ class User < ActiveRecord::Base
          :recoverable,
          :rememberable,
          :validatable
+  has_many :posts, dependent: :destroy
   include DeviseTokenAuth::Concerns::User
 end
