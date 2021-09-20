@@ -10,7 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_15_090221) do
+ActiveRecord::Schema.define(version: 2021_09_18_093406) do
+  create_table "posts",
+               options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+               force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "content"
+    t.string "post_image"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_posts_on_user_id"
+  end
+
   create_table "users",
                options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
                force: :cascade do |t|
@@ -26,7 +37,7 @@ ActiveRecord::Schema.define(version: 2021_08_15_090221) do
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
     t.string "username"
-    t.string "image"
+    t.string "profile_image"
     t.string "email"
     t.text "tokens"
     t.datetime "created_at", precision: 6, null: false
@@ -42,4 +53,6 @@ ActiveRecord::Schema.define(version: 2021_08_15_090221) do
             name: "index_users_on_uid_and_provider",
             unique: true
   end
+
+  add_foreign_key "posts", "users"
 end
