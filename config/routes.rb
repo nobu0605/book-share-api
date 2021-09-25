@@ -10,6 +10,9 @@ Rails
                                   }
       get "/get_users", to: "users#get_users"
       post "/get_user", to: "users#get_user"
-      resources :posts, only: %i[index show create update destroy]
+      resources :posts, only: %i[show create update destroy]
+      post "/get_posts", to: "posts#get_posts"
+      resources :likes, only: %i[create]
+      delete "/likes/:user_id/:post_id", to: "likes#destroy"
     end
   end
