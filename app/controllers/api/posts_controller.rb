@@ -1,17 +1,30 @@
 class Api::PostsController < ApplicationController
   before_action :authenticate_api_user!
 
-  def index
+  def get_posts
     @posts =
       Post
         .select(
-          "posts.*,
-            posts.id as post_id,
-            users.*"
+          " posts.id,
+            posts.content,
+            posts.post_image,
+            posts.user_id,
+            users.profile_image,
+            users.username"
         )
         .joins("LEFT JOIN users ON posts.user_id = users.id")
         .order("posts.created_at DESC")
-    render status: "200", json: @posts
+    @user = User.find(params["auth_user_id"])
+
+    posts = []
+    @posts.each do |post|
+      post_attributes = post.attributes
+      post_attributes["liked_count"] = post.liked_users.count
+      post_attributes["already_liked"] = @user.already_liked?(post)
+      posts.push(post_attributes)
+    end
+
+    render status: "200", json: posts
   rescue Exception => e
     render status: "500", json: { message: "Internal Server Error" }
   end
