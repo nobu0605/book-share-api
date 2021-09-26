@@ -2,6 +2,10 @@ class Api::PostsController < ApplicationController
   before_action :authenticate_api_user!
 
   def get_posts
+    page = params[:page].to_i
+    limit = 20
+    offset = page * limit
+
     @posts =
       Post
         .select(
@@ -14,6 +18,9 @@ class Api::PostsController < ApplicationController
         )
         .joins("LEFT JOIN users ON posts.user_id = users.id")
         .order("posts.created_at DESC")
+        .limit(limit)
+        .offset(offset)
+
     @user = User.find(params["auth_user_id"])
 
     posts = []
@@ -38,9 +45,18 @@ class Api::PostsController < ApplicationController
 
   def create
     @post = Post.new(post_params)
-    return render status: "200", json: { message: "Success" } if @post.save
 
-    return render status: "400", json: { message: "Failed" }
+    if @post.save
+      post_attributes = @post.attributes
+      @user = @post.user
+      post_attributes["profile_image"] = @user.profile_image
+      post_attributes["username"] = @user.username
+      post_attributes["liked_count"] = @post.liked_users.count
+      post_attributes["already_liked"] = @user.already_liked?(@post)
+      return render status: "200", json: post_attributes
+    end
+
+    render status: "400", json: { message: "Failed" }
   rescue Exception => e
     render status: "500", json: { message: "Internal Server Error" }
   end
