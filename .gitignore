@@ -28,3 +28,6 @@
 /config/credentials.yml.enc
 
 node_modules
+
+/public/post-img/*
+!/public/post-img/dummy.txt

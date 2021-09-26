@@ -44,19 +44,29 @@ class Api::PostsController < ApplicationController
   end
 
   def create
-    @post = Post.new(post_params)
+    ActiveRecord::Base.transaction do
+      post_params = { user_id: params[:user_id], content: params[:content] }
+      @post = Post.new(post_params)
 
-    if @post.save
-      post_attributes = @post.attributes
-      @user = @post.user
-      post_attributes["profile_image"] = @user.profile_image
-      post_attributes["username"] = @user.username
-      post_attributes["liked_count"] = @post.liked_users.count
-      post_attributes["already_liked"] = @user.already_liked?(@post)
-      return render status: "200", json: post_attributes
+      if @post.save
+        file = params[:post_picture]
+        image_name = "#{@post.id}-#{file.original_filename}"
+        File.open("public/post-img/#{image_name}", "wb") do |f|
+          f.write(file.read)
+        end
+        @post.update(post_image: image_name)
+
+        post_attributes = @post.attributes
+        @user = @post.user
+        post_attributes["profile_image"] = @user.profile_image
+        post_attributes["username"] = @user.username
+        post_attributes["liked_count"] = @post.liked_users.count
+        post_attributes["already_liked"] = @user.already_liked?(@post)
+
+        return render status: "200", json: post_attributes
+      end
+      render status: "400", json: { message: "Failed" }
     end
-
-    render status: "400", json: { message: "Failed" }
   rescue Exception => e
     render status: "500", json: { message: "Internal Server Error" }
   end
@@ -75,9 +85,5 @@ class Api::PostsController < ApplicationController
     render status: "200", json: { message: "Success" }
   rescue Exception => e
     render status: "500", json: { message: "Internal Server Error" }
-  end
-
-  private def post_params
-    params.require(:post).permit(:user_id, :content, :post_image)
   end
 end
