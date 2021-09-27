@@ -49,12 +49,14 @@ class Api::PostsController < ApplicationController
       @post = Post.new(post_params)
 
       if @post.save
-        file = params[:post_picture]
-        image_name = "#{@post.id}-#{file.original_filename}"
-        File.open("public/post-img/#{image_name}", "wb") do |f|
-          f.write(file.read)
+        if params[:post_picture].present?
+          file = params[:post_picture]
+          image_name = "#{@post.id}-#{file.original_filename}"
+          File.open("public/post-img/#{image_name}", "wb") do |f|
+            f.write(file.read)
+          end
+          @post.update(post_image: image_name)
         end
-        @post.update(post_image: image_name)
 
         post_attributes = @post.attributes
         @user = @post.user
