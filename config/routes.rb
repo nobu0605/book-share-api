@@ -12,7 +12,9 @@ Rails
       post "/get_user", to: "users#get_user"
       resources :posts, only: %i[show create update destroy]
       post "/get_posts", to: "posts#get_posts"
+      post "/get_post", to: "posts#get_post"
       resources :likes, only: %i[create]
       delete "/likes/:user_id/:post_id", to: "likes#destroy"
+      resources :comments, only: %i[show create update destroy]
     end
   end
