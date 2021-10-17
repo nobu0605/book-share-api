@@ -27,11 +27,51 @@ class Api::PostsController < ApplicationController
     @posts.each do |post|
       post_attributes = post.attributes
       post_attributes["liked_count"] = post.liked_users.count
+      post_attributes["commented_count"] = post.commented_users.count
       post_attributes["already_liked"] = @user.already_liked?(post)
       posts.push(post_attributes)
     end
 
     render status: "200", json: posts
+  rescue Exception => e
+    render status: "500", json: { message: "Internal Server Error" }
+  end
+
+  def get_post
+    @post =
+      Post
+        .select(
+          " posts.id,
+            posts.content,
+            posts.post_image,
+            posts.user_id,
+            users.profile_image,
+            users.username"
+        )
+        .joins("LEFT JOIN users ON posts.user_id = users.id")
+        .where("posts.id = #{params[:post_id]}")
+    post = @post[0]
+    @user = User.find(params["auth_user_id"])
+    @comments =
+      Comment
+        .select(
+          "comments.id,
+          comments.content,
+          comments.post_id,
+          comments.user_id,
+          users.profile_image,
+          users.username"
+        )
+        .joins("LEFT JOIN users ON comments.user_id = users.id")
+        .where("comments.post_id = #{params[:post_id]}")
+        .order("comments.created_at DESC")
+
+    post_attribute = post.attributes
+    post_attribute["liked_count"] = post.liked_users.count
+    post_attribute["commented_count"] = post.commented_users.count
+    post_attribute["already_liked"] = @user.already_liked?(post)
+
+    render status: "200", json: { post: post_attribute, comments: @comments }
   rescue Exception => e
     render status: "500", json: { message: "Internal Server Error" }
   end
@@ -63,6 +103,7 @@ class Api::PostsController < ApplicationController
         post_attributes["profile_image"] = @user.profile_image
         post_attributes["username"] = @user.username
         post_attributes["liked_count"] = @post.liked_users.count
+        post_attributes["commented_count"] = @post.commented_users.count
         post_attributes["already_liked"] = @user.already_liked?(@post)
 
         return render status: "200", json: post_attributes
