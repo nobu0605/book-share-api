@@ -31,3 +31,5 @@ node_modules
 
 /public/post-img/*
 !/public/post-img/dummy.txt
+/public/profile-img/*
+!/public/profile-img/dummy.txt
