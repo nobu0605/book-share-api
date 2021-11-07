@@ -10,6 +10,8 @@ Rails
                                   }
       get "/get_users", to: "users#get_users"
       post "/get_user", to: "users#get_user"
+      post "/get_my_posts", to: "users#get_my_posts"
+      post "update_user", to: "users#update_user"
       resources :posts, only: %i[show create update destroy]
       post "/get_posts", to: "posts#get_posts"
       post "/get_post", to: "posts#get_post"
