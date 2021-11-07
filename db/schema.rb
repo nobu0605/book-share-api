@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_03_044801) do
+ActiveRecord::Schema.define(version: 2021_11_06_120903) do
   create_table "comments",
                options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
                force: :cascade do |t|
@@ -64,6 +64,7 @@ ActiveRecord::Schema.define(version: 2021_10_03_044801) do
     t.string "unconfirmed_email"
     t.string "username"
     t.string "profile_image"
+    t.string "self_introduction", limit: 160
     t.string "email"
     t.text "tokens"
     t.datetime "created_at", precision: 6, null: false
