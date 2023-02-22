@@ -1,24 +1,10 @@
-# README
+# Getting Started
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+### Create DB in your docker
 
-Things you may want to cover:
+`bundle exec rake db:create`
 
-* Ruby version
+### Create Tables in your docker
 
-* System dependencies
+`rake db:migrate`
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
